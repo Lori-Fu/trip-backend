@@ -1,0 +1,159 @@
+create database if not exists trip_article;
+use trip_article;
+
+-- Article table:
+drop table if exists article_content;
+create table article_content
+(
+id bigint not null auto_increment,
+user_id bigint,
+state char(2),
+content varchar(1000),
+create_time datetime,
+post_status boolean,
+primary key (id)
+);
+
+drop table if exists article_day;
+create table article_day
+(
+id bigint not null auto_increment,
+article_id bigint,
+day_count tinyint,
+primary key (id)
+);
+
+drop table if exists article_route;
+create table article_route
+(
+id bigint not null auto_increment,
+day_id bigint,
+dest_order tinyint,
+destination_id bigint,
+primary key (id)
+);
+
+
+-- Destination table:
+create database if not exists trip_destination;
+use trip_destination;
+
+drop table if exists destination;
+create table destination
+(
+id bigint not null auto_increment,
+attraction varchar(64),
+state char(2),
+detail varchar(600),
+address varchar(64),
+pic varchar(500),
+primary key (id)
+);
+
+-- User table:
+create database if not exists trip_user;
+use trip_user;
+
+drop table if exists user_info;
+create table user_info
+(
+id bigint not null auto_increment,
+username varchar(20),
+email varchar(20),
+pwd varchar(20),
+primary key (id)
+);
+
+
+-- Comment table:
+create database if not exists trip_comment;
+use trip_comment;
+
+drop table if exists article_comments;
+create table article_comments
+(
+id bigint not null auto_increment,
+user_id bigint,
+article_id bigint,
+content varchar(100),
+create_time datetime,
+primary key (id)
+);
+
+drop table if exists comment_comments;
+create table comment_comments
+(
+id bigint not null auto_increment,
+user_id bigint,
+comment_id bigint,
+content varchar(100),
+create_time datetime,
+primary key (id)
+);
+
+-- Statistic table:
+create database if not exists trip_statistic;
+use trip_comment;
+
+drop table if exists user_collection;
+create table user_collection
+(
+id bigint not null auto_increment,
+article_id bigint,
+primary key (id)
+);
+
+drop table if exists user_article_like;
+create table user_article_like
+(
+id bigint not null auto_increment,
+article_id bigint,
+primary key (id)
+);
+
+drop table if exists user_comment_like;
+create table user_comment_like
+(
+id bigint not null auto_increment,
+article_id bigint,
+primary key (id)
+);
+
+-- seed destination data
+use trip_destination;
+insert into destination
+(attraction,state,detail,address,pic)
+values
+("Statue of Liberty", "NY", "A symbol of freedom and democracy, the Statue of Liberty is a must-visit landmark.", "Liberty Island, New York, NY 10004", "https://images.unsplash.com/photo-1503572327579-b5c6afe5c5c5?q=80&w=1642&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("Central Park", "NY", "A vast urban park offering a peaceful retreat with lakes, walking paths, and various recreational activities.", "Central Park, New York, NY 10022", "https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("Times Square", "NY", "A bustling commercial and entertainment hub known for its theaters, bright lights, and iconic New Year's Eve ball drop.", "Broadway, New York, NY 10036", "https://images.unsplash.com/photo-1570740753915-b7b204e7f2a0?q=80&w=1712&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("Empire State Building", "NY", "An iconic skyscraper with an observation deck providing stunning views of the city.", "20 W 34th St, New York, NY 10001", "https://images.unsplash.com/photo-1555109307-f7d9da25c244?q=80&w=1746&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("The Metropolitan Museum of Art (The Met)", "NY", "One of the world's largest and most prestigious art museums, featuring a vast collection of art spanning various periods and cultures.", "1000 5th Ave, New York, NY 10028", "https://images.unsplash.com/photo-1584994799933-e4f717e88632?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("The Museum of Modern Art (MoMA)", "NY", "A leading museum of modern art, showcasing a diverse range of contemporary artworks.", "11 W 53rd St, New York, NY 10019", "https://images.unsplash.com/photo-1618949251648-84fb795ac213?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9tYXxlbnwwfHwwfHx8MA%3D%3D"), ("Brooklyn Bridge", "NY", "An iconic suspension bridge connecting Manhattan and Brooklyn, known for its architectural beauty and panoramic views of the city skyline.", "New York, NY 10038", "https://plus.unsplash.compremium_photo-1673266203705-08ee530cc2b5?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("National 9/11 Museum", "NY", "A memorial and museum commemorating the events of September 11, 2001, featuring artifacts, exhibits, and stories honoring the lives lost during the terrorist attacks.", "180 Greenwich St, New York, NY 10007", ""),
+("American Museum of Natural History", "NY", "A world-renowned museum dedicated to natural history, featuring a vast collection of exhibits, specimens, and educational programs covering various scientific disciplines.", "Central Park West & 79th St, New York, NY 10024", "https://images.unsplash.com/photo-1534739302117-e9ff126dec91?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("Broadway", "NY", "The renowned theater district, known for its world-class performances and musicals.", "Various theaters along Broadway", "https://images.unsplash.com/photo-1597464718291-2c643690d7ab?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YnJvYWR3YXl8ZW58MHx8MHx8fDA%3D"),
+("Bryant Park", "NY", "A centrally located park in Midtown Manhattan known for its green spaces, seasonal events, and amenities, providing a tranquil escape in the heart of the city.", "New York, NY 10018", "https://images.unsplash.com/photo-1557265021-ad01a98a24e3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QnJ5YW50JTIwUGFya3xlbnwwfHwwfHx8MA%3D%3D"),
+-- ("Rockefeller Center", "NY", "45 Rockefeller Plaza, New York, NY 10111", "A famous complex of commercial buildings, entertainment venues, and the Top of the Rock Observation Deck.", ""),
+-- ("Chelsea Market", "75 9th Ave, New York, NY 10011", "A vibrant market housed in a historic building, offering a variety of shops, restaurants, and food vendors.", ""),
+-- ("Fifth Avenue", "New York, NY", "A famous shopping street known for its luxury boutiques, flagship stores, and cultural attractions.", ""),
+-- ("Oculus", "33-69 Vesey St, New York, NY 10007", "A striking transportation hub and shopping center with a distinctive design, located at the World Trade Center site.", ""),
+-- ("Wall Street", "New York, NY", "A historic street in the Financial District, home to the New York Stock Exchange and other financial institutions.", ""),
+-- ("Soho", "New York, NY", "A trendy neighborhood known for its artistic community, boutique shops, and cast-iron architecture.", ""),
+-- ("Washington Square Park", "New York, NY 10012", "A famous public park in Greenwich Village, featuring a central fountain, arch, and vibrant community activities.", ""),
+-- ("The Vessel", "20 Hudson Yards, New York, NY 10001", "An interactive art structure and landmark at Hudson Yards, offering panoramic views of the city.", ""),
+-- ("Whitney Museum of American Art", "99 Gansevoort St, New York, NY 10014", "A renowned art museum showcasing American contemporary and modern art.", ""),
+-- ("United Nations Headquarters", "405 E 42nd St, New York, NY 10017", "The official headquarters of the United Nations, promoting international cooperation and diplomacy.", ""),
+("Princeton University", "NJ", "One of the Ivy League universities with a picturesque campus, historic buildings, and the renowned Princeton University Art Museum.", "Princeton, NJ 08544"
+, "https://images.unsplash.com/photo-1635642220437-8324f5182e8f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8UHJpbmNldG9uJTIwVW5pdmVyc2l0eXxlbnwwfHwwfHx8MA%3D%3D"),
+("Six Flags Great Adventure", "NJ", "A large amusement park with thrilling rides, water attractions, and live entertainment."
+, "1 Six Flags Blvd, Jackson, NJ 08527", "https://images.unsplash.com/photo-1560376579-2f27ee6eee1e?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("Atlantic City Boardwalk", "NJ", "An iconic boardwalk along the Jersey Shore, known for its casinos, shops, and entertainment.", "Atlantic City, NJ"
+, "https://images.unsplash.com/photo-1629486543600-4295b60826fe?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8QXRsYW50aWMlMjBDaXR5JTIwbmp8ZW58MHx8MHx8fDA%3D"),
+("Cape May Historic District", "NJ", "A charming Victorian seaside town with well-preserved architecture, beaches, and historic sites."
+, "Cape May, NJ 08204", "https://images.unsplash.com/photo-1568002870107-82ff0197417a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Q2FwZSUyME1heSUyMEhpc3RvcmljJTIwRGlzdHJpY3R8ZW58MHx8MHx8fDA%3D"),
+("The Alamo", "TX", "A historic site and museum commemorating the Battle of the Alamo, a pivotal event in Texas history.", "300 Alamo Plaza, San Antonio, TX 78205",
+"https://images.unsplash.com/photo-1630697101345-de1ed42c8465?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGhlJTIwQWxhbW98ZW58MHx8MHx8fDA%3D"),
+("San Antonio River Walk", "TX", "A scenic network of walkways along the San Antonio River, lined with shops, restaurants, and cultural attractions.", "San Antonio, TX",
+"https://images.unsplash.com/photo-1634508943216-5887aac4eb66?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8U2FuJTIwQW50b25pbyUyMFJpdmVyJTIwV2Fsa3xlbnwwfHwwfHx8MA%3D%3D"),
+("Texas State Capitol", "TX", "The historic state capitol building in Austin, featuring guided tours and exhibits on Texas history and government.", "1100 Congress Ave, Austin, TX 78701", "https://plus.unsplash.com/premium_photo-1694475355421-80351f949904?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8VGV4YXMlMjBTdGF0ZSUyMENhcGl0b2x8ZW58MHx8MHx8fDA%3D"
+),
+("Mission San José", "TX", "One of the historic Spanish missions in San Antonio, part of the San Antonio Missions National Historical Park. Mission San José is known for its well-preserved church and grounds, showcasing colonial architecture and providing insights into the region's history.", "6701 San Jose Dr, San Antonio, TX 78214", "https://images.unsplash.com/photo-1634508943538-8e8aad301650?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TWlzc2lvbiUyMFNhbiUyMEpvcyVDMyVBOXxlbnwwfHwwfHx8MA%3D%3D"
+);

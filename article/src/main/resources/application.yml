@@ -1,0 +1,18 @@
+server:
+  port: 11000
+spring:
+  datasource:
+    username: root
+    password: 913147306
+    url: jdbc:mysql://localhost:3306/trip_article
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: Article
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

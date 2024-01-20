@@ -7,11 +7,19 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>trip</name>
     <description>management</description>
+    <properties>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+    </properties>
     <packaging>pom</packaging>
 
     <modules>
-        <module>article</module>
+        <module>common</module>
+        <module>eureka</module>
+        <module>gateway</module>
         <module>destination</module>
+        <module>article</module>
+        <module>comments</module>
         <module>user</module>
     </modules>
 

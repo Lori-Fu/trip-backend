@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Gateway
+  cloud:
+    gateway:
+        routes:
+          - id: homepage
+            uri: http://localhost:13000
+            predicates:
+              - Path=/destination/**
+            filters:
+              - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
