@@ -7,7 +7,7 @@ spring:
     url: jdbc:mysql://localhost:3306/trip_user
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
-    name: User
+    name: user
 mybatis-plus:
   global-config:
     db-config:

@@ -6,6 +6,6 @@ import com.trip.user.pojo.UserPojo;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface UseDao extends BaseMapper<UserPojo> {
+public interface UserDao extends BaseMapper<UserPojo> {
 
 }

@@ -59,8 +59,7 @@ create table user_info
 (
 id bigint not null auto_increment,
 username varchar(20),
-email varchar(20),
-pwd varchar(20),
+password varchar(100),
 primary key (id)
 );
 
@@ -99,6 +98,7 @@ drop table if exists user_collection;
 create table user_collection
 (
 id bigint not null auto_increment,
+user_id bigint,
 article_id bigint,
 primary key (id)
 );
@@ -107,6 +107,7 @@ drop table if exists user_article_like;
 create table user_article_like
 (
 id bigint not null auto_increment,
+user_id bigint,
 article_id bigint,
 primary key (id)
 );
@@ -115,7 +116,8 @@ drop table if exists user_comment_like;
 create table user_comment_like
 (
 id bigint not null auto_increment,
-article_id bigint,
+user_id bigint,
+comment_id bigint,
 primary key (id)
 );
 

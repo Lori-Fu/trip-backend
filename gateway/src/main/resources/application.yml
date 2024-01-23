@@ -1,3 +1,11 @@
+#logging:
+#  level:
+#    reactor:
+#      netty: INFO
+#    org:
+#      springframework:
+#        cloud:
+#          gateway: TRACE
 server:
   port: 8080
 spring:
@@ -5,13 +13,35 @@ spring:
     name: Gateway
   cloud:
     gateway:
-        routes:
-          - id: homepage
-            uri: http://localhost:13000
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+
+      routes:
+          - id: destination
+            uri: lb://destination
             predicates:
               - Path=/destination/**
             filters:
               - StripPrefix=1
+          - id: user
+            uri: lb://user
+            predicates:
+              - Path=/user/**
+            filters:
+              - StripPrefix=1
+
 
 eureka:
   client:
