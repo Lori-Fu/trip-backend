@@ -8,7 +8,9 @@ create table article_content
 id bigint not null auto_increment,
 user_id bigint,
 state char(2),
-content varchar(1000),
+day_count tinyint,
+content_head varchar(5000),
+content_tail varchar(5000),
 create_time datetime,
 post_status boolean,
 primary key (id)
@@ -19,7 +21,9 @@ create table article_day
 (
 id bigint not null auto_increment,
 article_id bigint,
+day_id tinyint,
 day_count tinyint,
+content varchar(5000),
 primary key (id)
 );
 
@@ -27,7 +31,9 @@ drop table if exists article_route;
 create table article_route
 (
 id bigint not null auto_increment,
-day_id bigint,
+article_id bigint,
+day_id tinyint,
+day_count tinyint,
 dest_order tinyint,
 destination_id bigint,
 primary key (id)
@@ -37,6 +43,16 @@ primary key (id)
 -- Destination table:
 create database if not exists trip_destination;
 use trip_destination;
+
+drop table if exists states;
+create table states
+(
+id bigint not null auto_increment,
+name char(2),
+abbr varchar(600),
+description varchar(64),
+primary key (id)
+);
 
 drop table if exists destination;
 create table destination
@@ -123,13 +139,73 @@ primary key (id)
 
 -- seed destination data
 use trip_destination;
+insert into states
+(name,abbr,description)
+values
+("Alabama", "AL","Alabama, located in the southeastern United States, is known for its rich history and cultural heritage. The state capital is Montgomery, and its largest city is Birmingham. Alabama played a significant role in the civil rights movement, with landmarks like the Rosa Parks Museum and the Dexter Avenue King Memorial Baptist Church in Montgomery."),
+("Alaska", "AK","Alaska, the largest state in the U.S., is renowned for its breathtaking natural beauty and vast wilderness. The state's capital is Juneau, and its largest city is Anchorage. Alaska is characterized by rugged mountains, glaciers, and diverse wildlife, including bears, moose, and whales. The iconic Denali National Park is home to North America's highest peak, Denali. The state offers unique outdoor adventures such as dog sledding, northern lights viewing, and salmon fishing."),
+("Arizona", "AZ","Arizona is known for its diverse landscapes and iconic natural wonders. The state is famous for the Grand Canyon, a breathtaking geological marvel. Arizona's landscape includes the Sonoran Desert, home to the unique saguaro cactus, and the red rock formations of Sedona. With a warm climate and a rich Native American and Hispanic heritage, Arizona offers a mix of outdoor adventures, cultural experiences, and stunning desert vistas."),
+("Arkansas", "AR","Arkansas is a known for its diverse geography, including the Ozark Mountains and the Mississippi River. Arkansas is characterized by scenic landscapes, hot springs, and numerous outdoor recreational opportunities. The state's cultural heritage is reflected in its music, literature, and festivals, making Arkansas a blend of natural beauty and Southern charm."),
+("California", "CA","California is the most populous state in the U.S. and a global economic powerhouse. California is renowned for its diverse landscapes, including the iconic beaches of Southern California, the tech hub of Silicon Valley, and the picturesque vineyards of Napa Valley. Home to Hollywood, California is a major influencer in the entertainment industry. The state boasts national parks like Yosemite and cultural destinations such as Disneyland. With a Mediterranean climate and a cultural melting pot, California is a symbol of innovation and lifestyle."),
+("Colorado", "CO","Colorado is a landlocked state in the Rocky Mountain region known for its stunning mountain landscapes, outdoor recreational opportunities, and vibrant cities. Colorado is famous for its world-class ski resorts in towns like Aspen and Vail, as well as its numerous national parks and forests. The state is a haven for outdoor enthusiasts, offering activities like hiking, biking, and white-water rafting. Colorado's diverse attractions make it a popular destination for nature lovers and adventure seekers."),
+("Connecticut", "CT","Connecticut is a New England state known for its rich history, charming coastal towns, and proximity to major cities. Connecticut is recognized for its colonial architecture, picturesque landscapes, and maritime heritage. Yale University in New Haven is an Ivy League institution with a notable cultural impact."),
+("Delaware", "DE","Delaware is a small Mid-Atlantic state known for its historical significance and business-friendly environment. Delaware's appeal lies in its colonial architecture, charming small towns, and proximity to major cities like Philadelphia and Baltimore. With a mix of coastal beauty and economic importance, Delaware maintains a unique position in American history and commerce."),
+("Florida", "FL","Florida, often referred to as the Sunshine State, is known for its tropical climate, beautiful beaches, and vibrant cities. Florida is famous for tourist destinations like Walt Disney World in Orlando, the beaches of Miami, and the Everglades National Park. Miami's cultural diversity and nightlife make it a global city, while the Florida Keys offer a laid-back island atmosphere. With a mix of natural wonders, theme parks, and cultural attractions, Florida is a popular destination for both residents and tourists."),
+("Georgia", "GA","Georgia is known for its rich history, southern hospitality, and diverse landscapes. The capital and largest city is Atlanta, a major economic and cultural hub. The state offers a mix of urban sophistication and Southern charm. Georgia's cultural contributions include a strong presence in music, particularly in the genres of country and hip-hop."),
+("Hawaii", "HI","Hawaii, a tropical paradise in the central Pacific, is a unique state known for its stunning natural beauty, diverse ecosystems, and vibrant Polynesian culture. Hawaii is composed of a chain of islands, each with its own distinct character, from the volcanic landscapes of the Big Island to the lush greenery of Kauai. The state is famous for its world-renowned beaches and its active volcanoes. The aloha spirit, hula dance, and traditional luaus showcase Hawaii's rich cultural heritage."),
+("Idaho", "ID","Idaho is known for its diverse landscapes, including mountains, forests, and fertile plains. The state is celebrated for its outdoor recreational opportunities. The state is renowned for its potato production, earning it the nickname the \"Gem State.\" With a mix of natural beauty and agricultural significance, Idaho offers a serene escape for those seeking outdoor adventures and a connection to the great outdoors."),
+("Illinois", "IL","Illinois is a diverse state known for its urban sophistication, agricultural productivity, and historical significance. The largest city, Chicago, is a global financial and cultural hub. Chicago's skyline, museums, and vibrant arts scene contribute to the state's cultural richness."),
+("Indiana", "IN","Indiana is a state known for its Hoosier hospitality, sports enthusiasm, and historical significance. Indiana is rich in history. The state's rural areas feature farmland and charming small towns, while university towns like Bloomington add cultural vibrancy. Indiana's strong basketball tradition contributes to its sports culture."),
+("Iowa", "IA","Iowa is a state known for its agricultural landscapes, friendly communities, and political significance. The state's cultural attractions include the State Capitol, the Amana Colonies showcasing German heritage, and the Field of Dreams baseball field."),
+("Kansas", "KS","Kansas is a state known for its expansive prairies, agricultural productivity, and historical significance. Attractions like Dodge City pay homage to this history. The state is renowned for its amber waves of grain, and it plays a central role in the nation's breadbasket. Kansas City is known for its jazz heritage and barbecue cuisine. With a mix of rural charm and urban vibrancy, Kansas offers a glimpse into the diverse landscapes of the Great Plains."),
+("Kentucky", "KY",""),
+("Louisiana", "LA",""),
+("Maine", "ME",""),
+("Maryland", "MD",""),
+("Massachusetts", "MA",""),
+("Michigan", "MI",""),
+("Minnesota", "MN",""),
+("Mississippi", "MS",""),
+("Missouri", "MO",""),
+("Montana", "MT",""),
+("Nebraska", "NE",""),
+("Nevada", "NV",""),
+("New Hampshire", "NH",""),
+("New Jersey", "NJ","New Jersey is a diverse state known for its proximity to major cities, suburban landscapes, and coastal attractions.Often referred to as the \"Garden State,\" New Jersey features a mix of urban centers and scenic areas. The Jersey Shore is famous for its beaches and boardwalks, while the state's northwest offers mountainous terrain. With a blend of cultural diversity, historic sites, and natural beauty, New Jersey is a dynamic and multifaceted state."),
+("New Mexico", "NM",""),
+("New York", "NY","New York is a global cultural and financial powerhouse. The state is home to the iconic New York City, the largest city in the country. New York City is known for its world-renowned landmarks such as Times Square, Central Park, and the Statue of Liberty. The state boasts diverse regions, including the scenic Hudson Valley, the Adirondack Mountains, and Long Island's picturesque beaches. New York plays a pivotal role in finance, fashion, and the arts, with Broadway and Wall Street being symbolic of its influence."),
+("North Carolina", "NC",""),
+("North Dakota", "ND",""),
+("Ohio", "OH",""),
+("Oklahoma", "OK",""),
+("Oregon", "OR",""),
+("Pennsylvania", "PA",""),
+("Rhode Island", "RI",""),
+("South Carolina", "SC",""),
+("South Dakota", "SD",""),
+("Tennessee", "TN",""),
+("Texas", "TX",""),
+("Utah", "UT",""),
+("Vermont", "VT",""),
+("Virginia", "VA",""),
+("Washington", "WA",""),
+("West Virginia", "WV",""),
+("Wisconsin", "WI",""),
+("Wyoming", "WY",""),
+("Washington DC", "DC", "");
+
+
 insert into destination
 (attraction,state,detail,address,pic)
 values
 ("Statue of Liberty", "NY", "A symbol of freedom and democracy, the Statue of Liberty is a must-visit landmark.", "Liberty Island, New York, NY 10004", "https://images.unsplash.com/photo-1503572327579-b5c6afe5c5c5?q=80&w=1642&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
 ("Central Park", "NY", "A vast urban park offering a peaceful retreat with lakes, walking paths, and various recreational activities.", "Central Park, New York, NY 10022", "https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-("Times Square", "NY", "A bustling commercial and entertainment hub known for its theaters, bright lights, and iconic New Year's Eve ball drop.", "Broadway, New York, NY 10036", "https://images.unsplash.com/photo-1570740753915-b7b204e7f2a0?q=80&w=1712&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("Empire State Building", "NY", "An iconic skyscraper with an observation deck providing stunning views of the city.", "20 W 34th St, New York, NY 10001", "https://images.unsplash.com/photo-1555109307-f7d9da25c244?q=80&w=1746&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("The Metropolitan Museum of Art (The Met)", "NY", "One of the world's largest and most prestigious art museums, featuring a vast collection of art spanning various periods and cultures.", "1000 5th Ave, New York, NY 10028", "https://images.unsplash.com/photo-1584994799933-e4f717e88632?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-("The Museum of Modern Art (MoMA)", "NY", "A leading museum of modern art, showcasing a diverse range of contemporary artworks.", "11 W 53rd St, New York, NY 10019", "https://images.unsplash.com/photo-1618949251648-84fb795ac213?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9tYXxlbnwwfHwwfHx8MA%3D%3D"), ("Brooklyn Bridge", "NY", "An iconic suspension bridge connecting Manhattan and Brooklyn, known for its architectural beauty and panoramic views of the city skyline.", "New York, NY 10038", "https://plus.unsplash.compremium_photo-1673266203705-08ee530cc2b5?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"), ("National 9/11 Museum", "NY", "A memorial and museum commemorating the events of September 11, 2001, featuring artifacts, exhibits, and stories honoring the lives lost during the terrorist attacks.", "180 Greenwich St, New York, NY 10007", ""),
+("Times Square", "NY", "A bustling commercial and entertainment hub known for its theaters, bright lights, and iconic New Year's Eve ball drop.", "Broadway, New York, NY 10036", "https://images.unsplash.com/photo-1570740753915-b7b204e7f2a0?q=80&w=1712&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("Empire State Building", "NY", "An iconic skyscraper with an observation deck providing stunning views of the city.", "20 W 34th St, New York, NY 10001", "https://images.unsplash.com/photo-1555109307-f7d9da25c244?q=80&w=1746&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("The Metropolitan Museum of Art (The Met)", "NY", "One of the world's largest and most prestigious art museums, featuring a vast collection of art spanning various periods and cultures.", "1000 5th Ave, New York, NY 10028", "https://images.unsplash.com/photo-1584994799933-e4f717e88632?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("The Museum of Modern Art (MoMA)", "NY", "A leading museum of modern art, showcasing a diverse range of contemporary artworks.", "11 W 53rd St, New York, NY 10019", "https://images.unsplash.com/photo-1618949251648-84fb795ac213?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9tYXxlbnwwfHwwfHx8MA%3D%3D"),
+("Brooklyn Bridge", "NY", "An iconic suspension bridge connecting Manhattan and Brooklyn, known for its architectural beauty and panoramic views of the city skyline.", "New York, NY 10038", "https://plus.unsplash.com/premium_photo-1673266203705-08ee530cc2b5?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+("National 9/11 Museum", "NY", "A memorial and museum commemorating the events of September 11, 2001, featuring artifacts, exhibits, and stories honoring the lives lost during the terrorist attacks.", "180 Greenwich St, New York, NY 10007", ""),
 ("American Museum of Natural History", "NY", "A world-renowned museum dedicated to natural history, featuring a vast collection of exhibits, specimens, and educational programs covering various scientific disciplines.", "Central Park West & 79th St, New York, NY 10024", "https://images.unsplash.com/photo-1534739302117-e9ff126dec91?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
 ("Broadway", "NY", "The renowned theater district, known for its world-class performances and musicals.", "Various theaters along Broadway", "https://images.unsplash.com/photo-1597464718291-2c643690d7ab?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YnJvYWR3YXl8ZW58MHx8MHx8fDA%3D"),
 ("Bryant Park", "NY", "A centrally located park in Midtown Manhattan known for its green spaces, seasonal events, and amenities, providing a tranquil escape in the heart of the city.", "New York, NY 10018", "https://images.unsplash.com/photo-1557265021-ad01a98a24e3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QnJ5YW50JTIwUGFya3xlbnwwfHwwfHx8MA%3D%3D"),

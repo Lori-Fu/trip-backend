@@ -8,10 +8,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: user
+
 mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
+
 eureka:
   client:
     service-url:

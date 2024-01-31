@@ -8,13 +8,16 @@ import java.util.Date;
 
 
 @Data
-@TableName("comments")
-public class ArticlePojo {
+@TableName("article_content")
+public class ArticleContentPojo {
     @TableId
     private Long id;
     private Long user_id;
-    private Long article_id;
-    private Long comment_id;
-    private String content;
+    private String state;
+    private Integer day_count;
+    private String header;
+    private String content_head;
+    private String content_tail;
     private Date create_time;
+    private boolean post_status;
 }

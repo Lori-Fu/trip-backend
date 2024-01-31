@@ -41,6 +41,12 @@ spring:
               - Path=/user/**
             filters:
               - StripPrefix=1
+          - id: article
+            uri: lb://article
+            predicates:
+              - Path=/article/**
+            filters:
+              - StripPrefix=1
 
 
 eureka:
