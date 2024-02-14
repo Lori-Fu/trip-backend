@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -65,5 +66,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new BusinessException(401, "Please log in.");
         }
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        loginUser.remove();
     }
 }

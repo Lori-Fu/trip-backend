@@ -6,9 +6,11 @@ import com.trip.destination.dao.DestinationDao;
 import com.trip.destination.pojo.DestinationPojo;
 import com.trip.destination.service.DestinationService;
 import com.trip.destination.vo.DestinationInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationDao, Destinat
                     vo.setId(attraction.getId());
                     vo.setAttraction(attraction.getAttraction());
                     vo.setAddress(attraction.getAddress());
+                    vo.setPic(attraction.getPic());
                     return vo;
                 }
         ).collect(Collectors.toList());
@@ -38,12 +41,34 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationDao, Destinat
     }
 
     @Override
-    public DestinationInfo getBriefAttraction(Long id) {
-        DestinationPojo destination = this.getOne(new QueryWrapper<DestinationPojo>().eq("id", id));
-        DestinationInfo destinationInfo = new DestinationInfo();
-        destinationInfo.setId(destination.getId());
-        destinationInfo.setAttraction(destination.getAttraction());
-        destinationInfo.setAddress(destination.getAddress());
-        return destinationInfo;
+    public List<List<DestinationInfo>> getDestinationForRoute(List<List<Long>> route) {
+        // TODO: thread
+        List<List<DestinationInfo>> result = new ArrayList<>();
+        for (int i = 0; i < route.size(); i++) {
+            List<Long> routeByDay = route.get(i);
+            List<DestinationInfo> responseByDay = new ArrayList<>();
+            for (int j = 0; j < routeByDay.size(); j++) {
+                DestinationPojo destination = this.getOne(new QueryWrapper<DestinationPojo>().eq("id", routeByDay.get(j)));
+                DestinationInfo destinationInfo = new DestinationInfo();
+                BeanUtils.copyProperties(destination, destinationInfo);
+                responseByDay.add(destinationInfo);
+            }
+            result.add(responseByDay);
+        }
+        return result;
+    }
+
+    @Override
+    public List<DestinationPojo> initES(Integer current, Integer limit) {
+        int offset = (current - 1) * limit;
+        QueryWrapper<DestinationPojo> queryWrapper = new QueryWrapper<DestinationPojo>().last("limit " + offset + "," + limit);
+        List<DestinationPojo> list = this.list(queryWrapper);
+        return list;
+    }
+
+    @Override
+    public DestinationPojo searchAttraction(String keyword) {
+        DestinationPojo attraction = this.getOne(new QueryWrapper<DestinationPojo>().eq("attraction", keyword));
+        return attraction;
     }
 }

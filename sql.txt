@@ -9,33 +9,37 @@ id bigint not null auto_increment,
 user_id bigint,
 state char(2),
 day_count tinyint,
+title varchar(100),
 content_head varchar(5000),
+content_body json,
+route json,
 content_tail varchar(5000),
 create_time datetime,
 post_status boolean,
+cover_url varchar(100),
+thumbup_num bigint,
+collect_num bigint,
+reply_num bigint,
+view_num bigint,
 primary key (id)
 );
 
-drop table if exists article_day;
-create table article_day
+drop table if exists article_rank;
+create table article_rank
 (
 id bigint not null auto_increment,
 article_id bigint,
-day_id tinyint,
-day_count tinyint,
-content varchar(5000),
-primary key (id)
-);
-
-drop table if exists article_route;
-create table article_route
-(
-id bigint not null auto_increment,
-article_id bigint,
-day_id tinyint,
-day_count tinyint,
-dest_order tinyint,
-destination_id bigint,
+state char(2),
+title varchar(100),
+content_head varchar(5000),
+cover_url varchar(100),
+create_time datetime,
+statistic_time datetime,
+thumbup_num bigint,
+collect_num bigint,
+reply_num bigint,
+view_num bigint,
+statistic_num bigint,
 primary key (id)
 );
 
@@ -44,15 +48,39 @@ primary key (id)
 create database if not exists trip_destination;
 use trip_destination;
 
-drop table if exists states;
-create table states
+drop table if exists region;
+create table region
 (
 id bigint not null auto_increment,
-name char(2),
-abbr varchar(600),
-description varchar(64),
+name varchar(20),
+states json,
 primary key (id)
 );
+
+drop table if exists state;
+create table state
+(
+id bigint not null auto_increment,
+name varchar(20),
+abbr char(2),
+description varchar(1000),
+primary key (id)
+);
+
+insert into region (name, states)
+values ('Northeast', JSON_ARRAY(30,32,7,21,38,39,45,29,19,20,8,51));
+
+insert into region (name, states)
+values ('Central', JSON_ARRAY(13,14,15,16,22,23,25,27,34,35,41,49));
+
+insert into region (name, states)
+values ('South', JSON_ARRAY(1,4,9,10,17,18,24,33,36,40,42,43,46,48));
+
+insert into region (name, states)
+values ('West', JSON_ARRAY(3,5,6,12,26,28,31,37,44,47,50));
+
+insert into region (name, states)
+values ('Other', JSON_ARRAY(2,11));
 
 drop table if exists destination;
 create table destination
@@ -76,6 +104,8 @@ create table user_info
 id bigint not null auto_increment,
 username varchar(20),
 password varchar(100),
+collect_list json,
+thumbup_list json,
 primary key (id)
 );
 
@@ -89,9 +119,12 @@ create table article_comments
 (
 id bigint not null auto_increment,
 user_id bigint,
+username varchar(20),
 article_id bigint,
 content varchar(100),
 create_time datetime,
+thumbup_num bigint,
+thumbup_list json,
 primary key (id)
 );
 
@@ -106,40 +139,9 @@ create_time datetime,
 primary key (id)
 );
 
--- Statistic table:
-create database if not exists trip_statistic;
-use trip_comment;
-
-drop table if exists user_collection;
-create table user_collection
-(
-id bigint not null auto_increment,
-user_id bigint,
-article_id bigint,
-primary key (id)
-);
-
-drop table if exists user_article_like;
-create table user_article_like
-(
-id bigint not null auto_increment,
-user_id bigint,
-article_id bigint,
-primary key (id)
-);
-
-drop table if exists user_comment_like;
-create table user_comment_like
-(
-id bigint not null auto_increment,
-user_id bigint,
-comment_id bigint,
-primary key (id)
-);
-
 -- seed destination data
 use trip_destination;
-insert into states
+insert into state
 (name,abbr,description)
 values
 ("Alabama", "AL","Alabama, located in the southeastern United States, is known for its rich history and cultural heritage. The state capital is Montgomery, and its largest city is Birmingham. Alabama played a significant role in the civil rights movement, with landmarks like the Rosa Parks Museum and the Dexter Avenue King Memorial Baptist Church in Montgomery."),

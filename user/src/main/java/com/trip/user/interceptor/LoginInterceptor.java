@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 throw new BusinessException(401, "Login Expired.");
             }else {
                 ObjectMapper objectMapper = new ObjectMapper();
-                UserResponseVo user = objectMapper.readValue(s, UserResponseVo.class);
+                UserResponseVo user = objectMapper.readValue( s, UserResponseVo.class);
                 Long loginTime;
                 if (user.getExpire_time() - (loginTime = System.currentTimeMillis()) < UserConstant.REFRESH_TOKEN_TIME * 60 * 1000){
                     user.setLogin_time(loginTime);

@@ -7,4 +7,5 @@ public class DestinationInfo {
     private Long id;
     private String attraction;
     private String address;
+    private String pic;
 }

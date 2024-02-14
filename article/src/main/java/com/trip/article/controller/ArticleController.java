@@ -1,14 +1,18 @@
 package com.trip.article.controller;
 
+import com.trip.article.pojo.ArticleRankPojo;
 import com.trip.article.service.ArticleContentService;
-import com.trip.article.service.ArticleDayService;
-import com.trip.article.service.ArticleRouteService;
-import com.trip.article.vo.ArticleResponseVo;
+import com.trip.article.service.ArticleRankService;
+import com.trip.article.vo.ArticleBriefVoToEs;
+import com.trip.article.vo.ArticleContentResponseVo;
 import com.trip.article.vo.ArticleVo;
 import com.trip.article.annotation.RequireLogin;
 import com.trip.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/")
@@ -18,16 +22,7 @@ public class ArticleController {
     ArticleContentService articleContentService;
 
     @Autowired
-    ArticleDayService articleDayService;
-
-    @Autowired
-    ArticleRouteService articleRouteService;
-
-
-    @GetMapping("/test")
-    public R test(){
-        return R.ok();
-    }
+    ArticleRankService articleRankService;
 
     @PostMapping("/new")
     @RequireLogin
@@ -43,11 +38,44 @@ public class ArticleController {
     @GetMapping("/{id}")
     public R getArticle(@PathVariable("id") Long id){
         try{
-            ArticleResponseVo article = articleContentService.getArticle(id);
+            Map<String, Object> article = articleContentService.getArticle(id);
+            articleContentService.incrementViewNum(id);
             return R.ok().put("data", article);
         }catch (Exception e){
             return R.error(500, "Internal Server Error");
         }
+    }
+
+    @GetMapping("/article/author/{user_id}")
+    R getArticleByAuthor(@RequestParam Long user_id){
+        List<ArticleContentResponseVo> articles = articleContentService.getArticleByUser(user_id);
+        return R.ok().put("data",articles);
+    };
+
+    @RequireLogin
+    @GetMapping("/myArticle")
+    R getMyArticle(){
+        List<ArticleContentResponseVo> articles = articleContentService.getMyArticle();
+        return R.ok().put("data",articles);
+    };
+
+
+    @GetMapping("/hot")
+    R getHotArticle(){
+        List<ArticleRankPojo> articles = articleRankService.list();
+        return R.ok().put("data",articles);
+    };
+
+    @GetMapping("/initArticleES")
+    R initArticleES(Integer current, Integer limit){
+        List<ArticleBriefVoToEs> list = articleContentService.initES(current, limit);
+        return R.ok().put("data",list);
+    };
+
+    @GetMapping("/myCollections")
+    R getArticles(@RequestParam List<Long> list){
+        List<ArticleBriefVoToEs> articles = articleContentService.getArticles(list);
+        return R.ok().put("data",articles);
     }
 
 }

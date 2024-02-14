@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.trip.statistic.mapper.ArticleContentMapper">
+
+    <select id="queryArticleRank" resultMap="com.trip.statistic.mapper.ArticleRankMapper.BaseResultMap">
+        select id article_id, state, title, content_head, create_time, cover_url, view_num, thumbup_num, collect_num, reply_num, (view_num*0.1 + thumbup_num*0.3 + collect_num*0.3 + reply_num*0.3) statistic_num
+        from article_content
+        order by statistic_num desc
+        limit 11
+    </select>
+
+</mapper>

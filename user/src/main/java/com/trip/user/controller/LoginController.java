@@ -3,15 +3,16 @@ package com.trip.user.controller;
 import com.trip.common.exception.BusinessException;
 import com.trip.common.utils.R;
 import com.trip.user.annotation.RequireLogin;
-import com.trip.user.service.LoginService;
-import com.trip.user.vo.ArticleAuthor;
-import com.trip.user.vo.RegisterVo;
+import com.trip.user.service.UserService;
+import com.trip.user.vo.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class LoginController {
 
     @Autowired
-    LoginService loginService;
+    UserService userService;
 
     @PostMapping("/register")
     public R register(@Valid @RequestBody RegisterVo registerVo, BindingResult result){
@@ -35,7 +36,7 @@ public class LoginController {
             return R.error(400,"BAD_INPUT").put("error", error);
         }
         try{
-            loginService.register(registerVo);
+            userService.register(registerVo);
         }catch (BusinessException e){
             return R.error(e.getCode(), e.getMessage());
         }
@@ -45,7 +46,7 @@ public class LoginController {
     @PostMapping("/login")
     public R login(@RequestBody RegisterVo registerVo){
         try{
-            Map<String, Object> user = loginService.login(registerVo);
+            Map<String, Object> user = userService.login(registerVo);
             return R.ok().put("userInfo", user);
         }catch (BusinessException e) {
             return R.error(e.getCode(), e.getMessage());
@@ -54,9 +55,46 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/articleAuthor")
-    R getArticleAuthor(@RequestParam Long id){
-        ArticleAuthor author = loginService.getArticleAuthor(id);
+    @GetMapping("/info/{id}")
+    public R getUserInfo(@PathVariable Long id){
+        UserInfoVo author = userService.getUserInfo(id);
         return R.ok().put("data", author);
-    };
+    }
+
+
+    @GetMapping("/statistic/{id}")
+    public R getStatList(@PathVariable("id") Long id){
+        Map<String,List<Integer>> statList = userService.getStatList(id);
+        return R.ok().put("data", statList);
+    }
+
+    @RequireLogin
+    @GetMapping("/collectArticle/{id}")
+    public R collectArticle(@PathVariable("id") Long id){
+        userService.collectArticle(id);
+        return R.ok();
+    }
+
+    @RequireLogin
+    @GetMapping("/likeArticle/{id}")
+    public R likeArticle(@PathVariable("id") Long id){
+        userService.likeArticle(id);
+        return R.ok();
+    }
+
+    @RequireLogin
+    @GetMapping("/myCollections")
+    public R myCollections(){
+        List<ArticleBriefVoToEs> articles = userService.myCollections();
+        return R.ok().put("data", articles);
+    }
+
+    @RequireLogin
+    @GetMapping("/myLikes")
+    public R myLikes(){
+        List<ArticleBriefVoToEs> articles = userService.myLikes();
+        return R.ok().put("data", articles);
+    }
+
+
 }

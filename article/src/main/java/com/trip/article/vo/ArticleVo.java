@@ -10,8 +10,9 @@ public class ArticleVo {
     Integer day_count;
     String content_head;
     String content_tail;
-    String header;
+    String title;
     List<List<DestinationInfo>> itinerary;
-    List<String> articleBody;
+    List<String> content_body;
     boolean visibility;
+    private String cover_url;
 }

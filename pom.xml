@@ -19,8 +19,10 @@
         <module>gateway</module>
         <module>destination</module>
         <module>article</module>
-        <module>comments</module>
+        <module>comment</module>
         <module>user</module>
+        <module>statistic</module>
+        <module>search</module>
     </modules>
 
 

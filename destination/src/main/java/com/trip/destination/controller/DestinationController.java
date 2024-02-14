@@ -6,12 +6,8 @@ import com.trip.destination.pojo.StatePojo;
 import com.trip.destination.service.DestinationService;
 import com.trip.destination.service.StateService;
 import com.trip.destination.vo.DestinationInfo;
-import com.trip.destination.vo.StateAttractionVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,9 +40,21 @@ public class DestinationController {
     }
 
     @GetMapping("/briefInfo")
-    public R getDestinationForRoute(Long id){
-        DestinationInfo destinationInfo = destinationService.getBriefAttraction(id);
+    public R getDestinationForRoute(@RequestParam("route") List<List<Long>> route){
+        List<List<DestinationInfo>> destinationInfo = destinationService.getDestinationForRoute(route);
         return R.ok().put("data",destinationInfo);
+    }
+
+    @GetMapping("/initAttractionES")
+    R initAttractionES(@RequestParam Integer current, @RequestParam Integer limit){
+        List<DestinationPojo> list = destinationService.initES(current, limit);
+        return R.ok().put("data",list);
+    }
+
+    @GetMapping("/search")
+    R searchAttraction(@RequestParam String keyword){
+        DestinationPojo attraction = destinationService.searchAttraction(keyword);
+        return R.ok().put("data", attraction);
     }
 
 }

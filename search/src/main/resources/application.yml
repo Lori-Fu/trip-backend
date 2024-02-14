@@ -1,0 +1,15 @@
+server:
+  port: 16000
+spring:
+  elasticsearch:
+      rest:
+        uri: http://localhost:9200
+  application:
+    name: search
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+es:
+  init:
+    key: dhalbnfjirelnajbrneve

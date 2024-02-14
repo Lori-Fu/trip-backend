@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.trip.statistic.mapper.ArticleRankMapper">
+
+<resultMap id="BaseResultMap" type="com.trip.statistic.pojo.ArticleRankPojo">
+    <id property="id" column="id"/>
+    <result property="article_id" column="article_id"/>
+    <result property="state" column="state"/>
+    <result property="title" column="title"/>
+    <result property="content_head" column="content_head"/>
+    <result property="create_time" column="create_time"/>
+    <result property="cover_url" column="cover_url"/>
+    <result property="statistic_time" column="statistic_time"/>
+    <result property="view_num" column="view_num"/>
+    <result property="thumbup_num" column="thumbup_num"/>
+    <result property="collect_num" column="collect_num"/>
+    <result property="reply_num" column="reply_num"/>
+
+    <result property="statistic_num" column="statistic_num"/>
+</resultMap>
+
+</mapper>

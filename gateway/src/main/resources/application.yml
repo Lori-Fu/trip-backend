@@ -47,6 +47,18 @@ spring:
               - Path=/article/**
             filters:
               - StripPrefix=1
+          - id: comment
+            uri: lb://comment
+            predicates:
+              - Path=/comment/**
+            filters:
+              - StripPrefix=1
+          - id: search
+            uri: lb://search
+            predicates:
+              - Path=/search/**
+            filters:
+              - StripPrefix=1
 
 
 eureka:
